@@ -7,6 +7,8 @@ interface User {
   name: string;
   username: string;
   email: string;
+  phone: string;
+  website: string;
 }
 
 // Custom hook to fetch user data based on the provided user ID
