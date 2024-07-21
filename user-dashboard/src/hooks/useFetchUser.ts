@@ -6,15 +6,17 @@ interface User {
   id: number;
   name: string;
   username: string;
-  email: string;
-  phone: string;
-  website: string;
+  company: {
+    catchPhrase: string;
+  };
 }
 
 // Custom hook to fetch user data based on the provided user ID
-const useFetchUser = (id: number) => {
+const useFetchUser = (id?: number) => {
   // State to store the fetched user data
   const [user, setUser] = useState<User | null>(null);
+  // State to store the fetched users list
+  const [users, setUsers] = useState<User[]>([]);
   // State to indicate whether the data is currently being loaded
   const [loading, setLoading] = useState(false);
   // State to store any error message encountered during the fetch
@@ -28,11 +30,19 @@ const useFetchUser = (id: number) => {
       setError(null); // Clear any previous error message
 
       try {
-        // Make a GET request to the API endpoint to fetch user data
-        const response = await axios.get(
-          `https://jsonplaceholder.typicode.com/users/${id}`
-        );
-        setUser(response.data); // Store the fetched user data in state
+        if (id !== undefined) {
+          // Fetch a specific user
+          const response = await axios.get(
+            `https://jsonplaceholder.typicode.com/users/${id}`
+          );
+          setUser(response.data);
+        } else {
+          // Fetch the list of users
+          const response = await axios.get(
+            "https://jsonplaceholder.typicode.com/users"
+          );
+          setUsers(response.data);
+        }
       } catch (err) {
         setError("Error fetching user data"); // Set error message if the fetch fails
       } finally {
@@ -50,7 +60,7 @@ const useFetchUser = (id: number) => {
   }, [id]); // Dependency array containing the user ID, so the effect runs when the ID changes
 
   // Return the fetched user data, loading state, and error message to the component using the hook
-  return { user, loading, error };
+  return { user, users, loading, error };
 };
 
 // Export the custom hook for use in other components

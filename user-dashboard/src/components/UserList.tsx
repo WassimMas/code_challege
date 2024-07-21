@@ -10,10 +10,14 @@ interface User {
 // Define the props interface for the UserList component
 interface UserListProps {
   setSelectedUserId: (id: number) => void; // Function to set the selected user ID
+  selectedUserId: number | null;
 }
 
 // UserList component to display a list of users
-const UserList: React.FC<UserListProps> = ({ setSelectedUserId }) => {
+const UserList: React.FC<UserListProps> = ({
+  setSelectedUserId,
+  selectedUserId,
+}) => {
   // State to store the list of users
   const [users, setUsers] = useState<User[]>([]);
 
@@ -30,24 +34,30 @@ const UserList: React.FC<UserListProps> = ({ setSelectedUserId }) => {
     fetchUsers(); // Call the fetchUsers function
   }, []); // Empty dependency array means this effect runs once when the component mounts
 
+  console.log("userList", users);
+
   // useMemo to optimize rendering of the user list by memoizing the result
   const userList = useMemo(
     () =>
       users.map((user) => (
-        <li
-          key={user.id}
-          onClick={() => setSelectedUserId(user.id)}
-          className="cursor-pointer"
-        >
-          {user.name}
+        <li key={user.id} className="cursor-pointer">
+          <div
+            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1  duration-300 ease-in-out hover:bg-graydark ${
+              selectedUserId === user.id ? "bg-graydark" : ""
+            } `}
+            onClick={() => setSelectedUserId(user.id)}
+          >
+            {user.name}
+          </div>
         </li>
       )),
-    [setSelectedUserId, users]
-  ); // Dependency array containing users, so the memoized result updates when users change
+    [selectedUserId, setSelectedUserId, users]
+  ); // Dependency array containing selectedUserId, setSelectedUserId and users, so the memoized result updates when they change
 
   return (
-    <ul className="list-disc">
-      {userList} {/* Render the memoized user list */}
+    <ul className=" list-none">
+      {userList}
+      {/* Render the memoized user list */}
     </ul>
   );
 };

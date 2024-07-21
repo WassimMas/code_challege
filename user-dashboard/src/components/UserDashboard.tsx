@@ -6,10 +6,25 @@ const UserDashboard: React.FC = () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">User Dashboard</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <UserList setSelectedUserId={setSelectedUserId} />
-        {selectedUserId && <UserDetail userId={selectedUserId} />}
+      <div className="flex flex-col gap-4 sm:flex-row  sm:gap-8">
+        <div className="bg-stone-900 w-full sm:w-[250px] h-auto sm:h-screen">
+          <h3 className="text-slate-500 text-lg mb-4 sm:mb-14 mt-6 italic pl-4">
+            Users
+          </h3>
+          <div className="pl-3">
+            {/* We have passed setSelectedUserId and selectedUserId as props to the UserList component */}
+            <UserList
+              setSelectedUserId={setSelectedUserId}
+              selectedUserId={selectedUserId}
+            />
+          </div>
+        </div>
+        {selectedUserId && (
+          <div className="w-full ">
+            {/* We have passed selectedUserId as props to the UserDetail component */}
+            <UserDetail userId={selectedUserId} />
+          </div>
+        )}
       </div>
     </div>
   );
